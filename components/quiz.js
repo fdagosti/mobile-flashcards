@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {Animated, Text, View, StyleSheet, Button, TouchableOpacity} from "react-native";
+import {clearLocalNotifications, setLocalNotification} from "../utils/notifications-helper";
 
 const SIDE = {
     QUESTION: "question",
@@ -36,7 +37,15 @@ export default class Quiz extends Component{
     }
 
     moveToNextQuestionOrExit = () => {
+
         this.setState(state=>({currentQuestionIdx: state.currentQuestionIdx+1}))
+
+        // handle local notifications
+        if (this.state.currentQuestionIdx >= (this.props.navigation.state.params.deck.questions.length -1)){
+            // quiz finished, let's reset the notifications
+            clearLocalNotifications()
+                .then(setLocalNotification)
+        }
     }
 
     putAnswer = (correct) => {

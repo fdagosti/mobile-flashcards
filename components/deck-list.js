@@ -87,7 +87,7 @@ export default class DeckList extends Component{
                         />
                     </View>
                     :
-                    <View style={{flex:1, alignItems:"center", justifyContent:"center"}}>
+                    <View style={{flex:1, alignItems:"center", justifyContent:"center", padding: 15}}>
                         <Text style={styles.infoText}>You do not have any deck. Please create some before</Text>
                         <DeckButton
                             primary
