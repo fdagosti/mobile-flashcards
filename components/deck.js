@@ -1,14 +1,70 @@
 import React, {Component} from "react"
-import {Text} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
+import {DeckButton} from "./forms";
 
 
 export default class Deck extends Component{
 
-    static navigationOptions = {
-        title: 'Deck',
-    };
+    static navigationOptions = ({navigation}) => ({
+        title: `${navigation.state.params.deck.title}`,
+    });
+
+
+    startQuizz = () => {
+        const {navigation} = this.props
+        this.props.navigation.navigate("quiz", {deck: navigation.state.params.deck})
+    }
 
     render(){
-        return (<Text>Hello I am A deck</Text>)
+
+        const {deck} = this.props.navigation.state.params
+
+        return (
+            <View style={styles.container}>
+                <View style={styles.titleGroup}>
+                    <Text
+                        style={styles.deckTitle}
+                    >
+                        {deck.title}
+                    </Text>
+                    <Text
+                        style={styles.deckSize}
+                    >{deck.questions.length} cards</Text>
+                </View>
+                <View style={styles.buttonGroup}>
+                    <DeckButton
+                        title="Add Card"
+                    />
+                    <DeckButton
+                        primary
+                        title="Start Quiz"
+                        onPress={this.startQuizz}
+                    />
+                </View>
+            </View>
+        )
     }
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
+    titleGroup:{
+      flex: 0.7,
+        justifyContent: "center"
+    },
+    buttonGroup: {
+        flex: 0.3,
+      alignItems:"center",
+        justifyContent: "center"
+    },
+    deckTitle: {
+        textAlign: "center",
+        fontSize: 40,
+    },
+    deckSize: {
+        textAlign: "center",
+        fontSize: 25,
+        color: "grey"
+    }
+})
