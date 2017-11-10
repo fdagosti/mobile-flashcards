@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Text, View, StyleSheet, TextInput} from "react-native";
+import {Text, View, StyleSheet, TextInput, KeyboardAvoidingView} from "react-native";
 import {DeckButton, FlashCardInput} from "./forms";
 import {saveDeckTitle} from "../utils/api";
 import {NavigationActions} from "react-navigation";
@@ -31,7 +31,7 @@ export default class NewDeck extends Component{
 
     render(){
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <Text style={{fontSize: 30}}>
                     What is the title of your new Deck?
                 </Text>
@@ -48,7 +48,7 @@ export default class NewDeck extends Component{
                     onPress={this.createDeck}
                 />
 
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }

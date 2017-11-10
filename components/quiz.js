@@ -118,23 +118,42 @@ const QuizPanel = ({frontInterpolate, backInterpolate, currentQuestion ,numberOf
     return (
         <View style={{flex: 1}}>
 
-            <Animated.View
-                pointerEvents={displayedSide===SIDE.QUESTION?"auto":"none"}
-                style={[frontAnimatedStyle, styles.flipCard]}>
                 <Text style={styles.questionCounter}>
                     {currentQuestionIdx + 1} / {numberOfQuestions}
                 </Text>
-                <View style={styles.contentPanel}>
-                    <Text style={styles.contentText}>
-                        {currentQuestion.question}
-                    </Text>
-                    <Button
-                        title="show Answer"
-                        color="red"
-                        onPress={flipCard}
-                    />
+                <View style={[styles.contentPanel]}>
+                    <Animated.View
+                        style={[frontAnimatedStyle, styles.flipCard]}
+                        pointerEvents={displayedSide===SIDE.QUESTION?"auto":"none"}
+                    >
+                        <Text style={styles.heading}>
+                            Question:
+                        </Text>
+                        <Text style={styles.contentText}>
+                            {currentQuestion.question}
+                        </Text>
+                        <Button
+                            title="show Answer"
+                            color="red"
+                            onPress={flipCard}
+                        />
+                    </Animated.View>
+                    <Animated.View
+                        pointerEvents={displayedSide===SIDE.ANSWER?"auto":"none"}
+                        style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}
+                    >
+                        <Text style={styles.heading}>
+                            Answer:
+                        </Text>
+                        <Text style={styles.contentText}>
+                            {currentQuestion.answer}
+                        </Text>
+                        <Button
+                            title="Go Back To Question"
+                            onPress={flipCard}
+                        />
+                    </Animated.View>
                 </View>
-
                 <View style={styles.buttonGroup}>
                     <QuizButton
                         title="Correct"
@@ -146,36 +165,6 @@ const QuizPanel = ({frontInterpolate, backInterpolate, currentQuestion ,numberOf
                         onPress={() => putAnswer(false)}
                     />
                 </View>
-            </Animated.View>
-
-            <Animated.View
-                pointerEvents={displayedSide===SIDE.ANSWER?"auto":"none"}
-                style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
-                <Text style={styles.questionCounter}>
-                    {currentQuestionIdx + 1} / {numberOfQuestions}
-                </Text>
-                <View style={styles.contentPanel}>
-                    <Text style={styles.contentText}>
-                        {currentQuestion.answer}
-                    </Text>
-                    <Button
-                        title="Go Back To Question"
-                        onPress={flipCard}
-                    />
-                </View>
-
-                <View style={styles.buttonGroup}>
-                    <QuizButton
-                        title="Correct"
-                        correct
-                        onPress={() => putAnswer(true)}
-                    />
-                    <QuizButton
-                        title="Incorrect"
-                        onPress={() => putAnswer(false)}
-                    />
-                </View>
-            </Animated.View>
 
 
         </View>
@@ -218,20 +207,23 @@ const QuizButton = ({title, correct, onPress}) => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "center",
+        padding: 20,
     },
     flipCard:{
-        alignItems: 'center',
-        justifyContent: 'center',
-        backfaceVisibility: "hidden"
+        backfaceVisibility: "hidden",
+        width: "100%",
+        height: "100%",
+        justifyContent: "center"
     },
     flipCardBack: {
         position: "absolute",
+        width: "100%",
+        height: "100%",
         top: 0,
     },
     questionCounter: {
-      padding:10,
         fontSize: 20
     },
     button: {
@@ -244,13 +236,18 @@ const styles = StyleSheet.create({
     },
     contentPanel:{
         flex: 0.7,
-        padding: 20,
         justifyContent: "center"
     },
     buttonGroup: {
         flex: 0.3,
         alignItems:"center",
         justifyContent: "center"
+    },
+    heading: {
+        textAlign: "center",
+        fontSize: 40,
+        color: "grey",
+        marginBottom: 50
     },
     contentText: {
         textAlign: "center",

@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Text, View, StyleSheet} from "react-native";
+import {Text, View, StyleSheet, KeyboardAvoidingView} from "react-native";
 import {DeckButton, FlashCardInput} from "./forms";
 import {addCardToDeck, saveDeckTitle} from "../utils/api";
 import {NavigationActions} from "react-navigation";
@@ -38,7 +38,7 @@ export default class NewQuestion extends Component{
 
     render(){
         return (
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <Text style={{fontSize: 30}}>
                     Write a question and its corresponding answer
                 </Text>
@@ -58,7 +58,8 @@ export default class NewQuestion extends Component{
                     title="Submit"
                     onPress={this.createCard}
                 />
-            </View>
+                <View style={{ height: 80 }} />
+            </KeyboardAvoidingView>
         )
     }
 }
