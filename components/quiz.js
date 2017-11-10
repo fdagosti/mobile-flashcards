@@ -92,6 +92,7 @@ export default class Quiz extends Component{
                     />:
                     <QuizResult
                         answers={answers}
+                        restart={()=>this.setState({currentQuestionIdx: 0, answers: {}})}
                         back={()=>navigation.goBack()}
                     />
                 }
@@ -172,7 +173,7 @@ const QuizPanel = ({frontInterpolate, backInterpolate, currentQuestion ,numberOf
 }
 
 
-const QuizResult = ({answers, back}) => {
+const QuizResult = ({answers, back, restart}) => {
     const totalQuestions = Object.keys(answers).length
     const correctNumber = Object.keys(answers).filter(an=>answers[an]).length
 
@@ -187,9 +188,14 @@ const QuizResult = ({answers, back}) => {
                 <Text style={styles.resultDetailsText}>You correct answer rate if {correctNumber/totalQuestions*100}%</Text>
             </View>
             <Button
-                title="Go back to the questions deck"
+                title="restart Quiz"
+                onPress={restart}
+            />
+            <Button
+                title="Go back to the deck"
                 onPress={back}
             />
+
         </View>
 )}
 

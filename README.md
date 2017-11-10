@@ -15,3 +15,7 @@ Easy enough eh :)
 
 The goals of this project is to exercise with React-native and learn the various parts of the APIs and platforms.
 It is part of the UDacity React nanodegree course.
+
+
+# Devices
+This application has been successfully tested on iOS and the Iphone 6S
