@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Text, View, StyleSheet, Button, TouchableOpacity} from "react-native";
+import {Animated, Text, View, StyleSheet, Button, TouchableOpacity} from "react-native";
 
 const SIDE = {
     QUESTION: "question",
@@ -15,8 +15,24 @@ export default class Quiz extends Component{
 
     state = {
         currentQuestionIdx: 0,
-        displayedSide: SIDE.QUESTION,
-        answers: {}
+        answers: {},
+        displayedSide: SIDE.QUESTION
+    }
+
+
+    componentWillMount() {
+        this.animatedValue = new Animated.Value(0);
+
+        this.frontInterpolate = this.animatedValue.interpolate({
+            inputRange: [0, 180],
+            outputRange: ['0deg', '180deg'],
+        })
+        this.backInterpolate = this.animatedValue.interpolate({
+            inputRange: [0, 180],
+            outputRange: ['180deg', '360deg']
+        })
+
+        this.displayedSide = SIDE.QUESTION;
     }
 
     moveToNextQuestionOrExit = () => {
@@ -33,17 +49,40 @@ export default class Quiz extends Component{
         this.moveToNextQuestionOrExit()
     }
 
-    flipCard = () => this.setState(state => ({displayedSide: state.displayedSide === SIDE.QUESTION?SIDE.ANSWER:SIDE.QUESTION}))
+    flipCard = () => {
+        const displayedSide = this.state.displayedSide === SIDE.QUESTION?SIDE.ANSWER:SIDE.QUESTION
+
+        if (displayedSide === SIDE.QUESTION) {
+            Animated.spring(this.animatedValue,{
+                toValue: 0,
+                friction: 8,
+                tension: 10
+            }).start();
+        } else {
+            Animated.spring(this.animatedValue,{
+                toValue: 180,
+                friction: 8,
+                tension: 10
+            }).start();
+        }
+        this.setState({displayedSide})
+    }
 
     render(){
+
         const {navigation} = this.props
         const {deck} = navigation.state.params
-        const {currentQuestionIdx, displayedSide, answers} = this.state
+        const {currentQuestionIdx, answers} = this.state
+
+        const displayedSide = this.state.displayedSide
 
         return (
             <View style={styles.container}>
                 {currentQuestionIdx < deck.questions.length ?
                     <QuizPanel
+                        frontInterpolate={this.frontInterpolate}
+                        backInterpolate={this.backInterpolate}
+
                         currentQuestion={deck.questions[currentQuestionIdx]}
                         displayedSide={displayedSide}
                         currentQuestionIdx={currentQuestionIdx}
@@ -63,38 +102,82 @@ export default class Quiz extends Component{
     }
 }
 
-const QuizPanel = ({currentQuestion ,numberOfQuestions, displayedSide, currentQuestionIdx, flipCard, putAnswer}) => {
+const QuizPanel = ({frontInterpolate, backInterpolate, currentQuestion ,numberOfQuestions, displayedSide, currentQuestionIdx, flipCard, putAnswer}) => {
 
-    const contentText = displayedSide === SIDE.QUESTION? currentQuestion.question:currentQuestion.answer
-    const buttonLabel = displayedSide === SIDE.QUESTION? "Show Answer" : "Go Back To Question"
+    const frontAnimatedStyle = {
+        transform: [
+            { rotateY: frontInterpolate}
+        ]
+    }
+    const backAnimatedStyle = {
+        transform: [
+            { rotateY: backInterpolate}
+        ]
+    }
 
     return (
         <View style={{flex: 1}}>
-            <Text style={styles.questionCounter}>
-                {currentQuestionIdx + 1} / {numberOfQuestions}
-            </Text>
-            <View style={styles.contentPanel}>
-                <Text style={styles.contentText}>
-                    {contentText}
-                </Text>
-                <Button
-                    title={buttonLabel}
-                    color="red"
-                    onPress={flipCard}
-                />
-            </View>
 
-            <View style={styles.buttonGroup}>
-                <QuizButton
-                    title="Correct"
-                    correct
-                    onPress={() => putAnswer(true)}
-                />
-                <QuizButton
-                    title="Incorrect"
-                    onPress={() => putAnswer(false)}
-                />
-            </View>
+            <Animated.View
+                pointerEvents={displayedSide===SIDE.QUESTION?"auto":"none"}
+                style={[frontAnimatedStyle, styles.flipCard]}>
+                <Text style={styles.questionCounter}>
+                    {currentQuestionIdx + 1} / {numberOfQuestions}
+                </Text>
+                <View style={styles.contentPanel}>
+                    <Text style={styles.contentText}>
+                        {currentQuestion.question}
+                    </Text>
+                    <Button
+                        title="show Answer"
+                        color="red"
+                        onPress={flipCard}
+                    />
+                </View>
+
+                <View style={styles.buttonGroup}>
+                    <QuizButton
+                        title="Correct"
+                        correct
+                        onPress={() => putAnswer(true)}
+                    />
+                    <QuizButton
+                        title="Incorrect"
+                        onPress={() => putAnswer(false)}
+                    />
+                </View>
+            </Animated.View>
+
+            <Animated.View
+                pointerEvents={displayedSide===SIDE.ANSWER?"auto":"none"}
+                style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
+                <Text style={styles.questionCounter}>
+                    {currentQuestionIdx + 1} / {numberOfQuestions}
+                </Text>
+                <View style={styles.contentPanel}>
+                    <Text style={styles.contentText}>
+                        {currentQuestion.answer}
+                    </Text>
+                    <Button
+                        title="Go Back To Question"
+                        onPress={flipCard}
+                    />
+                </View>
+
+                <View style={styles.buttonGroup}>
+                    <QuizButton
+                        title="Correct"
+                        correct
+                        onPress={() => putAnswer(true)}
+                    />
+                    <QuizButton
+                        title="Incorrect"
+                        onPress={() => putAnswer(false)}
+                    />
+                </View>
+            </Animated.View>
+
+
         </View>
     )
 }
@@ -134,7 +217,18 @@ const QuizButton = ({title, correct, onPress}) => (
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    flipCard:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backfaceVisibility: "hidden"
+    },
+    flipCardBack: {
+        position: "absolute",
+        top: 0,
     },
     questionCounter: {
       padding:10,
