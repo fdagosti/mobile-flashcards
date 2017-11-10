@@ -33,11 +33,6 @@ export default class Quiz extends Component{
         this.moveToNextQuestionOrExit()
     }
 
-    componentDidUpdate(){
-        console.log("after set state ",this.state)
-    }
-
-
     flipCard = () => this.setState(state => ({displayedSide: state.displayedSide === SIDE.QUESTION?SIDE.ANSWER:SIDE.QUESTION}))
 
     render(){

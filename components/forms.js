@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Button, Text, StyleSheet, View, TouchableOpacity} from "react-native";
+import {Button, Text, StyleSheet, View, TouchableOpacity, TextInput} from "react-native";
 
 
 
@@ -14,6 +14,16 @@ export const DeckButton = ({title, primary, onPress}) => (
     </TouchableOpacity>
 )
 
+
+export const FlashCardInput = (props)=>(
+    <View style={styles.inputContainer}>
+        <TextInput
+            {...props}
+            style={styles.deckTitleInput}
+        />
+    </View>
+)
+
 const styles = StyleSheet.create({
     button: {
         borderWidth:2,
@@ -23,5 +33,18 @@ const styles = StyleSheet.create({
         minWidth: 200,
         marginBottom:10,
         borderRadius: 5
+    },
+    deckTitleInput: {
+        fontSize: 20,
+        borderBottomColor: "black",
+        borderBottomWidth:1
+    },
+    inputContainer: {
+        alignSelf:"stretch",
+        padding: 10,
+        borderWidth:1,
+        borderRadius: 5,
+        marginBottom: 40,
+        marginTop: 40,
     },
 })

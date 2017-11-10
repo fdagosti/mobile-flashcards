@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {Text, View, StyleSheet, TextInput} from "react-native";
-import {DeckButton} from "./forms";
+import {DeckButton, FlashCardInput} from "./forms";
 import {saveDeckTitle} from "../utils/api";
 import {NavigationActions} from "react-navigation";
 
@@ -17,11 +17,12 @@ export default class NewDeck extends Component{
 
     createDeck = () => {
         saveDeckTitle(this.state.text)
-            .then(()=>{
+            .then((newDeck)=>{
                 const resetAction = NavigationActions.reset({
-                    index: 0,
+                    index: 1,
                     actions: [
-                        NavigationActions.navigate({routeName: "deckList"})
+                        NavigationActions.navigate({routeName: "deckList"}),
+                        NavigationActions.navigate({routeName: "deckDetail", params: {deck: newDeck}})
                     ]
                 })
                 this.props.navigation.dispatch(resetAction)
@@ -34,14 +35,11 @@ export default class NewDeck extends Component{
                 <Text style={{fontSize: 30}}>
                     What is the title of your new Deck?
                 </Text>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        autoFocus
-                        placeholder="Deck Title"
-                        style={styles.deckTitleInput}
-                        onChangeText={(text) => this.setState({text})}
-                    />
-                </View>
+                <FlashCardInput
+                    autoFocus
+                    placeholder="Deck Title"
+                    onChangeText={(text) => this.setState({text})}
+                />
 
                 <DeckButton
                     primary
@@ -62,18 +60,4 @@ const styles = StyleSheet.create({
         alignItems: "center",
         padding: 15
     },
-    inputContainer: {
-        alignSelf:"stretch",
-        padding: 10,
-        borderWidth:1,
-        borderRadius: 5,
-        marginBottom: 40,
-        marginTop: 40,
-    },
-    deckTitleInput: {
-        fontSize: 20,
-        borderBottomColor: "black",
-        borderBottomWidth:1
-    }
-
 })

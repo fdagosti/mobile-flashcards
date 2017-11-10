@@ -41,14 +41,17 @@ export function getDecks(){
 }
 
 export function getDeck(deckId){
-
+    return getDecks()
+        .then(decks => {
+            return decks[deckId]
+        })
 }
 
 export async function saveDeckTitle(title){
 
-    const newDeck = {[title]:{title, questions: []}}
+    const newDeck = {title, questions: []}
 
-    return AsyncStorage.mergeItem(DECK_KEY, JSON.stringify(newDeck))
+    return AsyncStorage.mergeItem(DECK_KEY, JSON.stringify({[newDeck.title]:newDeck})).then(()=>newDeck)
 
 }
 
@@ -57,5 +60,10 @@ export function clearDecks(){
 }
 
 export function addCardToDeck(title, card){
-
+    return getDeck(title)
+        .then(deck => {
+            deck.questions.push(card)
+            return AsyncStorage.mergeItem(DECK_KEY, JSON.stringify({[deck.title]:deck}))
+                .then(()=>deck)
+    })
 }

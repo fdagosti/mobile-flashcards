@@ -4,12 +4,14 @@ import Quiz from "./components/quiz";
 import DeckList from "./components/deck-list";
 import NewDeck from "./components/new-deck";
 import Deck from "./components/deck";
+import NewQuestion from "./components/new-question";
 
 const SimpleApp = StackNavigator({
     deckList: {screen: DeckList},
     quiz: { screen: Quiz},
     newDeck: {screen: NewDeck},
-    deckDetail: {screen: Deck}
+    deckDetail: {screen: Deck},
+    newQuestion: {screen: NewQuestion}
 });
 
 export default class App extends React.Component {

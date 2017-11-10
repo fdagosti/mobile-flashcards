@@ -34,6 +34,7 @@ export default class Deck extends Component{
                 <View style={styles.buttonGroup}>
                     <DeckButton
                         title="Add Card"
+                        onPress={()=> this.props.navigation.navigate("newQuestion", {deck: deck})}
                     />
                     <DeckButton
                         primary
